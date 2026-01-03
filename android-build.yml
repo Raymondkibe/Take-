@@ -1,0 +1,46 @@
+
+name: Build Android AAB (signed)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    env:
+      JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with: node-version: '18'
+      - name: Install frontend deps & build
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+      - name: Install Capacitor CLI
+        run: npm install -g @capacitor/cli
+      - name: Prepare Android platform
+        run: |
+          npm ci
+          npx cap add android || echo "android present"
+          npx cap copy android
+      - name: Decode keystore
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > release-key.jks
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Build AAB (release)
+        working-directory: android
+        run: |
+          chmod +x ./gradlew || true
+          ./gradlew bundleRelease -Pandroid.injected.signing.store.file=$PWD/../release-key.jks -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEY_PASSWORD }} --no-daemon
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quickapp-aab
+          path: android/app/build/outputs/**/*.aab

@@ -1,0 +1,1 @@
+import React from 'react'; export default function Page(){ return (<div className='card'><h2>Welcome to QUICKAPP</h2><p>Blue • Black • Gold Theme</p></div>); }

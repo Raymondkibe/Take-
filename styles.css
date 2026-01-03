@@ -1,0 +1,7 @@
+
+:root{--primary:#1A73E8;--dark:#0D1B2A;--black:#000;--gold:#FFD700;--light:#4A90E2}
+body{margin:0;font-family:Inter,Arial;background:linear-gradient(180deg,var(--dark),var(--black));color:#fff}
+.app{display:flex;min-height:100vh}.sidebar{width:220px;background:rgba(0,0,0,0.5);padding:18px}.main{flex:1;padding:20px}.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:16px;border-radius:12px}
+.follow-btn{background:linear-gradient(90deg,var(--primary),var(--gold));border:none;padding:8px 12px;border-radius:8px;color:#000;font-weight:700}
+.gift-btn{background:linear-gradient(90deg,var(--gold),var(--primary));border:none;padding:8px 10px;border-radius:10px;color:#000;font-weight:800}
+.chat{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px}
